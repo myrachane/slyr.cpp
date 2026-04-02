@@ -1,23 +1,35 @@
-# SLYR
+# SLYR — System-Linked Yacta Runtime
 
-**SLYR** is a modular avionics system for autonomous UAVs, built around a dual-compute architecture that separates real-time flight control from high-level autonomy.
+SLYR is a modular avionics system for autonomous UAVs, built around a dual-compute architecture that separates real-time flight control from high-level autonomy.
 
 ---
 
 ## Overview
 
-SLYR is designed with a strict separation of responsibilities:
+SLYR enforces a strict separation of responsibilities:
 
-* **STM32** handles deterministic, real-time flight control
-* **Raspberry Pi** handles autonomy, perception, and decision-making
+* **STM32 (Flight Kernel)** — deterministic, real-time control
+* **Raspberry Pi (Autonomy Layer)** — perception, planning, and decision-making
 
-This architecture ensures stability, safety, and extensibility.
+This design improves system stability, safety, and extensibility while enabling advanced autonomy without compromising control integrity.
 
 ---
 
-## Architecture
+## Product Line
 
-```text
+SLYR is designed as a unified platform supporting multiple aerial and flight systems:
+
+* **SLYR-Q** — Quadcopter systems (multirotor UAVs)
+* **SLYR-F** — Fixed-wing aircraft systems
+* **SLYR-K** — Kinetic launch systems (student rockets)
+
+Each series shares the same core runtime and communication architecture while adapting to platform-specific requirements.
+
+---
+
+## System Architecture
+
+```text id="q7j3z1"
 [ Sensors ]
      ↓
 [ STM32 Flight Kernel ]
@@ -27,7 +39,7 @@ This architecture ensures stability, safety, and extensibility.
      ↓
 [ Communication Layer ]
      ↓
-[ Autonomy Layer (Pi) ]
+[ Autonomy Layer (Raspberry Pi) ]
   - Navigation
   - Perception
   - Decision Engine (SLM)
@@ -48,8 +60,8 @@ This architecture ensures stability, safety, and extensibility.
 * Real-time control loop (~1 kHz)
 * Sensor fusion (IMU, GPS, barometer)
 * Attitude and rate PID controllers
-* Motor mixing (DShot/PWM)
-* Failsafe handling
+* Motor output (DShot / PWM)
+* Failsafe and watchdog systems
 
 ---
 
@@ -58,16 +70,16 @@ This architecture ensures stability, safety, and extensibility.
 * Waypoint navigation
 * Obstacle detection and avoidance
 * Mission planning
-* AI-assisted decision system (SLM)
+* Decision engine (SLM-based or rule-based)
 
 ---
 
-### Communication System
+### Communication Layer (SLYR Link)
 
 * Custom binary protocol
 * UART / SPI transport
 * CRC validation
-* Heartbeat and failsafe triggers
+* Heartbeat monitoring and failsafe triggers
 
 ---
 
@@ -77,11 +89,13 @@ This architecture ensures stability, safety, and extensibility.
 * Rate limiting
 * Constraint enforcement
 
+Ensures all control inputs remain within safe operational bounds before execution.
+
 ---
 
 ## Control Interface
 
-```json
+```json id="9mz3xn"
 {
   "roll": 5,
   "pitch": 0,
@@ -92,9 +106,9 @@ This architecture ensures stability, safety, and extensibility.
 
 ---
 
-## Mission Example
+## Mission Definition
 
-```json
+```json id="9v5x7o"
 {
   "mission": [
     {"lat": 22.1, "lon": 88.5, "alt": 20},
@@ -108,26 +122,26 @@ This architecture ensures stability, safety, and extensibility.
 
 ## Repository Structure
 
-```bash
+```bash id="f2s9kk"
 SLYR/
- ├── firmware/        # STM32 flight kernel
- ├── autonomy/        # Pi-side services
- ├── protocol/        # communication specifications
- ├── simulation/      # testing and validation
- ├── groundstation/   # UI (planned)
- └── docs/
+ ├── firmware/        # STM32 flight kernel (SLYR Core)
+ ├── autonomy/        # Raspberry Pi services
+ ├── protocol/        # communication specifications (SLYR Link)
+ ├── simulation/      # testing and validation tools
+ ├── groundstation/   # monitoring and control interface (planned)
+ └── docs/            # system documentation and diagrams
 ```
 
 ---
 
 ## Safety Model
 
-SLYR enforces strict separation between:
+SLYR enforces strict isolation between:
 
-* decision layer (AI / SLM)
-* control layer (flight kernel)
+* **Decision Layer** (autonomy / AI)
+* **Control Layer** (flight kernel)
 
-All inputs are:
+All incoming commands are:
 
 * validated
 * clamped
@@ -135,9 +149,11 @@ All inputs are:
 
 before being applied to the control system.
 
+The flight kernel retains final authority over actuation.
+
 ---
 
-## Roadmap
+## Development Roadmap
 
 ### Phase 1
 
@@ -155,7 +171,7 @@ before being applied to the control system.
 
 ### Phase 4
 
-* Obstacle avoidance
+* Obstacle detection and avoidance
 
 ### Phase 5
 
@@ -163,19 +179,27 @@ before being applied to the control system.
 
 ---
 
+## Documentation & Updates
+
+For updates, architecture insights, and development logs:
+
+**https://slyr.emtypyie.in**
+
+---
+
 ## Disclaimer
 
-This project is intended for research and educational purposes only.
-Ensure compliance with local laws and regulations before real-world deployment.
+This project is intended for research and educational use only.
+Ensure compliance with local regulations before deploying on real hardware.
 
 ---
 
 ## Vision
 
-SLYR aims to provide a unified platform combining:
+SLYR aims to provide a unified avionics platform combining:
 
-* real-time embedded systems
-* autonomous navigation
-* intelligent decision-making
+* Real-time embedded systems
+* Autonomous navigation
+* Intelligent decision-making
 
-for next-generation UAV systems.
+for next-generation aerial and space systems.
