@@ -1,4 +1,4 @@
-# SLYR — System-Linked Yacta Runtime
+# SLYR — System-Linked Runtime
 
 SLYR is a modular avionics system for autonomous UAVs, built around a dual-compute architecture that separates real-time flight control from high-level autonomy.
 
